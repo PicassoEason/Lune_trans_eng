@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rune Converter</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        #inputContainer, #outputContainer {
+            display: inline-block;
+            margin: 0 10px;
+        }
+
+        #output {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="inputContainer">
+            <h1>Rune Converter</h1>
+            <label for="inputText">Enter English text:</label>
+            <br>
+            <input type="text" id="inputText">
+            <br>
+            <button onclick="convertToRunes()">Convert to Runes</button>
+        </div>
+        <div id="outputContainer">
+            <h1>Rune Reverter</h1>
+            <label for="inputRunes">Enter Runes text:</label>
+            <br>
+            <input type="text" id="inputRunes">
+            <br>
+            <button onclick="convertToEnglish()">Convert to English</button>
+        </div>
+        <div id="output"></div>
+    </div>
+
+    <script>
+        const letterToRuneMap = {
+            'a': 'ᚨ', 'b': 'ᛒ', 'c': 'ᚲ', 'd': 'ᛞ', 'e': 'ᛖ',
+            'f': 'ᚠ', 'g': 'ᚷ', 'h': 'ᚺ', 'i': 'ᛁ', 'j': 'ᛃ',
+            'k': 'ᚲ', 'l': 'ᛚ', 'm': 'ᛗ', 'n': 'ᚾ', 'o': 'ᚮ',
+            'p': 'ᛈ', 'q': 'ᛩ', 'r': 'ᚱ', 's': 'ᛋ', 't': 'ᛏ',
+            'u': 'ᚢ', 'v': 'ᚢ', 'w': 'ᚹ', 'x': 'ᚲ', 'y': 'ᛃ',
+            'z': 'ᛉ',
+            ' ': ' ' // Keep spaces as they are
+        };
+
+        function reverseMap(obj) {
+            return Object.fromEntries(Object.entries(obj).map(([k, v]) => [v, k]));
+        }
+
+        const runeToLetterMap = reverseMap(letterToRuneMap);
+
+        function convertToRunes() {
+            const inputText = document.getElementById('inputText').value.toLowerCase();
+            const outputDiv = document.getElementById('output');
+            
+            let result = '';
+            for (let i = 0; i < inputText.length; i++) {
+                const char = inputText[i];
+                if (letterToRuneMap.hasOwnProperty(char)) {
+                    result += letterToRuneMap[char];
+                } else {
+                    result += char;
+                }
+            }
+
+            outputDiv.textContent = result;
+        }
+
+        function convertToEnglish() {
+            const inputRunes = document.getElementById('inputRunes').value;
+            const outputDiv = document.getElementById('output');
+
+            let result = '';
+            let runeCombination = '';
+            for (let i = 0; i < inputRunes.length; i++) {
+                const rune = inputRunes[i];
+                if (runeToLetterMap.hasOwnProperty(rune)) {
+                    result += runeToLetterMap[rune];
+                    runeCombination = '';
+                } else {
+                    runeCombination += rune;
+                    if (runeCombination in runeToLetterMap) {
+                        result += runeToLetterMap[runeCombination];
+                        runeCombination = '';
+                    }
+                }
+            }
+
+            outputDiv.textContent = result;
+        }
+    </script>
+</body>
+</html>
